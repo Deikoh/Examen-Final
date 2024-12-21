@@ -1,17 +1,62 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
+    <ion-title>Examen Final</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <div class="container">
+   
+    <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="searchProducts()"></ion-searchbar>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+    <ion-item>
+      <ion-label>Filtrar por categoría</ion-label>
+      <ion-select [(ngModel)]="selectedCategory" (ionChange)="onCategoryChange($event)">
+        <ion-select-option value="all">Todas</ion-select-option>
+        <ion-select-option value="smartphones">Smartphones</ion-select-option>
+        <ion-select-option value="laptops">Laptops</ion-select-option>
+        <ion-select-option value="fragrances">Fragrancias</ion-select-option>
+        <ion-select-option value="groceries">Comestibles</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-list>
+
+    <ion-button (click)="exportToJson()">Exportar a JSON</ion-button>
+
+      <ion-item *ngFor="let product of filteredProducts">
+        <ion-label (click)="fetchProduct(product.id)">
+          <h2>{{ product.title }}</h2>
+          <p>{{ product.description }}</p>
+          <p>Precio: {{ product.price | currency }}</p>
+          <p>Categoría: {{ product.category }}</p>
+          <p>Stock: {{ product.stock }}</p>
+        </ion-label>
+        <ion-button slot="end" (click)="deleteProduct(product.id)">Eliminar</ion-button>
+      </ion-item>
+    </ion-list>
+
+    <ion-modal [isOpen]="isModalOpen" (ionModalDidDismiss)="closeModal()">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ selectedProduct?.title }}</ion-title>
+          <ion-button slot="end" (click)="closeModal()">Cerrar</ion-button>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-card *ngIf="selectedProduct">
+          <ion-card-header>
+            <ion-card-title>{{ selectedProduct.title }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p>{{ selectedProduct.description }}</p>
+            <p>Precio: {{ selectedProduct.price | currency }}</p>
+            <p>Categoría: {{ selectedProduct.category }}</p>
+            <p>Stock: {{ selectedProduct.stock }}</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-content>
+    </ion-modal>
+
+  </div>
 </ion-content>
